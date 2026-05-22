@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
 
   # ─── Base de datos ───────────────────────────────────────────────
@@ -30,30 +28,36 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9010:9000"
+      - "9011:9001"
     volumes:
       - minio_data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 20s
 
   # ─── Infraestructura Spring Cloud ────────────────────────────────
   discovery-server:
-    build: ../services/discovery-server
+    build:
+      context: ..
+      dockerfile: services/discovery-server/Dockerfile
     container_name: routeit-discovery
     ports:
       - "8761:8761"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health | grep -q UP || exit 1"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   config-server:
-    build: ../services/config-server
+    build:
+      context: ..
+      dockerfile: services/config-server/Dockerfile
     container_name: routeit-config
     ports:
       - "8888:8888"
@@ -63,13 +67,16 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8888/actuator/health | grep -q UP || exit 1"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   api-gateway:
-    build: ../services/api-gateway
+    build:
+      context: ..
+      dockerfile: services/api-gateway/Dockerfile
     container_name: routeit-gateway
     ports:
       - "8080:8080"
@@ -83,7 +90,9 @@ services:
 
   # ─── Microservicios de negocio ────────────────────────────────────
   user-service:
-    build: ../services/user-service
+    build:
+      context: ..
+      dockerfile: services/user-service/Dockerfile
     container_name: routeit-user
     ports:
       - "8081:8081"
@@ -105,7 +114,9 @@ services:
         condition: service_healthy
 
   trip-service:
-    build: ../services/trip-service
+    build:
+      context: ..
+      dockerfile: services/trip-service/Dockerfile
     container_name: routeit-trip
     ports:
       - "8082:8082"
@@ -122,7 +133,9 @@ services:
         condition: service_healthy
 
   stops-service:
-    build: ../services/stops-service
+    build:
+      context: ..
+      dockerfile: services/stops-service/Dockerfile
     container_name: routeit-stops
     ports:
       - "8083:8083"
@@ -140,7 +153,9 @@ services:
         condition: service_healthy
 
   subscription-service:
-    build: ../services/subscription-service
+    build:
+      context: ..
+      dockerfile: services/subscription-service/Dockerfile
     container_name: routeit-subscription
     ports:
       - "8084:8084"
@@ -157,7 +172,9 @@ services:
         condition: service_healthy
 
   groups-service:
-    build: ../services/groups-service
+    build:
+      context: ..
+      dockerfile: services/groups-service/Dockerfile
     container_name: routeit-groups
     ports:
       - "8085:8085"
@@ -178,7 +195,9 @@ services:
         condition: service_healthy
 
   stats-service:
-    build: ../services/stats-service
+    build:
+      context: ..
+      dockerfile: services/stats-service/Dockerfile
     container_name: routeit-stats
     ports:
       - "8086:8086"
