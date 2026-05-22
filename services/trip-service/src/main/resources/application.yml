@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: trip-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/routeit?currentSchema=trips_schema}
+    username: ${SPRING_DATASOURCE_USERNAME:routeit}
+    password: ${SPRING_DATASOURCE_PASSWORD:routeit}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: trips_schema
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    schemas: trips_schema
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+google:
+  maps:
+    api-key: ${GOOGLE_MAPS_API_KEY:}
+    directions-url: https://maps.googleapis.com/maps/api/directions/json
+    distance-matrix-url: https://maps.googleapis.com/maps/api/distancematrix/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

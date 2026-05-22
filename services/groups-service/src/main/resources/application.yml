@@ -1,0 +1,43 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: groups-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/routeit?currentSchema=groups_schema}
+    username: ${SPRING_DATASOURCE_USERNAME:routeit}
+    password: ${SPRING_DATASOURCE_PASSWORD:routeit}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: groups_schema
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    schemas: groups_schema
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: routeit-photos
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

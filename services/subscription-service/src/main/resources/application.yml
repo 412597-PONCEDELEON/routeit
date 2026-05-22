@@ -1,0 +1,36 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: subscription-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/routeit?currentSchema=subscriptions_schema}
+    username: ${SPRING_DATASOURCE_USERNAME:routeit}
+    password: ${SPRING_DATASOURCE_PASSWORD:routeit}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: subscriptions_schema
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    schemas: subscriptions_schema
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+mercadopago:
+  access-token: ${MP_ACCESS_TOKEN:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

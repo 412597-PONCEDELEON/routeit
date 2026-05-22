@@ -1,0 +1,44 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: stops-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/routeit?currentSchema=stops_schema}
+    username: ${SPRING_DATASOURCE_USERNAME:routeit}
+    password: ${SPRING_DATASOURCE_PASSWORD:routeit}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: stops_schema
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    schemas: stops_schema
+    locations: classpath:db/migration
+  cache:
+    type: simple
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+google:
+  places:
+    api-key: ${GOOGLE_MAPS_API_KEY:}
+    nearby-search-url: https://maps.googleapis.com/maps/api/place/nearbysearch/json
+
+openweathermap:
+  api-key: ${OPENWEATHERMAP_API_KEY:}
+  forecast-url: https://api.openweathermap.org/data/2.5/forecast
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -1,0 +1,36 @@
+# Maven
+target/
+*.class
+*.jar
+*.war
+
+# Environment - NEVER commitear
+.env
+.env.prod
+.env.local
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# Logs
+*.log
+logs/
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Spring Boot
+*/src/main/resources/application-local.yml
+
+# Docker
+*.pid
+
+# OS
+.DS_Store
+Thumbs.db
